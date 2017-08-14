@@ -9,3 +9,7 @@ body {
 h1 {
   color:blue;
 }
+
+.taskList {
+  text-align: left;
+}
