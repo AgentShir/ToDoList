@@ -2,29 +2,49 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const mustacheExpress = require('mustache-express')
+const bodyParser = require('body-parser')
+const shortid = require('shortid')
 var jsonfile = require('jsonfile')
 var file = '/tmp/data.json'
 jsonfile.readFile(file, function(err, obj) {
-  console.dir(obj)
+  console.dir(obj, "obj")
 })
 
 
 app.engine('mustache', mustacheExpress());
 app.set('views', './views')
 app.set('view engine', 'mustache')
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:false}))
 
 app.use(express.static(path.join(__dirname, 'static')))
 
-const todos = [];
-let taskId = 0;
+var todos = [];
+var complete = [];
 
 app.get("/", function(req, res, next){
-  res.render("index", { todos: todos });
+  res.render("index", { todos: todos, complete: complete });
 });
 
 app.post("/", function (req, res) {
-  todos.push(req.body.listtask);
-  res.redirect('/');
+  todos.push({ id: shortid.generate(),
+    text: req.body.text
+
+  })
+  res.redirect("/");
+})
+
+app.post("/complete", function(req, res, next){
+  const id = req.body.id
+  const completeTodo = todos.filter(function(item){
+    return item.id === id
+  })[0]
+  complete.push(completeTodo)
+  todos = todos.filter(function(item){
+    return item.id !== id
+  })
+  res.redirect("/");
+  
 })
 
 app.listen(3000, function(){

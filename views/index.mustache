@@ -7,20 +7,23 @@
 </head>
 <body>
   <h1>ToDo List!</h1>
-    <form action="/" method="post" >
-      <input type="text" id="listtask" placeholder="To Do"><br />
-      <input type="submit" id="submit" value="New Task">
+    <form action="/" method="post">
+      <input name="text" type="text" id="text" placeholder="To Do"><br />
+      <button name="button" type="submit" id="submit">Add To Do</button>
     </form>
 
-    <div class="taskList">
-        <ul>
-          {{$todos}}
-            <li id='{{taskId}}'>
-              <input type="button" value="Finished">
-              <span>{{.}}</span>
-            </li>
-          {{/todos}}
-        </ul>
-    </div>
+    {{#todos}}
+    <form action="/complete" method="post">
+      <input type="hidden" name="id" value="{{id}}">
+      <button type="submit" name="button" class="checked">Mark As Complete</button>{{text}}
+    </form>
+    {{/todos}}
+
+    <h2>Finished</h2>
+    {{#complete}}
+    <p>{{text}}</p>
+    {{/complete}}
+
+
 </body>
 </html>
